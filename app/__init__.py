@@ -1,14 +1,13 @@
 from fastapi import FastAPI
-from .config import config_by_name
-
 from app.database import db
+from app.main.controller import user_controller
 
 
-def create_app(config_name):    
+def create_app(config_name):
     app = FastAPI()
 
-    app.config = config_by_name[config_name]
-
     db.init_app(app)
+
+    app.include_router(user_controller.router)
 
     return app

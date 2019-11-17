@@ -1,12 +1,14 @@
+import warnings
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import warnings
+from app.config import appConfig
 
 
 class SQLAlchemy():
     def __init__(self):
         self.Model = declarative_base()
+        self.config = appConfig
 
     def init_app(self, app):
         """
@@ -16,17 +18,18 @@ class SQLAlchemy():
                 'Neither SQLALCHEMY_DATABASE_URI nor SQLALCHEMY_BINDS is set. '
                 'Defaulting SQLALCHEMY_DATABASE_URI to "sqlite:///:memory:".')
         """
-        
-        SQLALCHEMY_DATABASE_URI = app.config.SQLALCHEMY_DATABASE_URI
+
+        SQLALCHEMY_DATABASE_URI = self.config.SQLALCHEMY_DATABASE_URI
 
         #connect_args={"check_same_thread": False}
         engine = create_engine(SQLALCHEMY_DATABASE_URI)
         self.session = sessionmaker(autocommit=False,
                                     autoflush=False,
-                                    bind=engine)        
+                                    bind=engine)
 
 
 db = SQLAlchemy()
+
 
 # Dependency
 def get_db():

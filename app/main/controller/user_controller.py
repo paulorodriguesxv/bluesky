@@ -11,26 +11,27 @@ from ..services import user_service
 from ..schemas import user as user_schema
 from ..schemas import token as token_schema
 from app.database import get_db
+from app.config import BaseConfig, get_config
 
 router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 async def get_current_user(db: Session = Depends(get_db),
-                           token: str = Depends(oauth2_scheme)):
+                           token: str = Depends(oauth2_scheme),
+                           config: BaseConfig = Depends(get_config)):
     credentials_exception = HTTPException(
         status_code=HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token,
+                             config.ACCESS_TOKEN_PUBLIC_KEY,
+                             algorithms=[config.ACCESS_TOKEN_ALGORITHM])
+
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -77,14 +78,24 @@ def authenticate_user(db, username: str, password: str):
     return user
 
 
-def create_access_token(*, data: dict, expires_delta: timedelta = None):
+def create_access_token(*,
+                        data: dict,
+                        expires_delta: timedelta = None,
+                        config: BaseConfig):
     to_encode = data.copy()
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    encoded_jwt = jwt.encode(
+        to_encode,
+        config.ACCESS_TOKEN_PRIVATE_KEY,
+        algorithm=config.ACCESS_TOKEN_ALGORITHM,
+        headers={'kid': '3q1sysizPaTHQhb+xErwIZfZymN+46UmssneP0vPkes='})
+
     return encoded_jwt
 
 
@@ -106,7 +117,8 @@ def create_user(user: user_schema.UserCreate, db: Session = Depends(get_db)):
 @router.post("/token", response_model=token_schema.Token)
 async def login_for_access_token(
         db: Session = Depends(get_db),
-        form_data: OAuth2PasswordRequestForm = Depends()):
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        config: BaseConfig = Depends(get_config)):
 
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -115,9 +127,11 @@ async def login_for_access_token(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(
+        minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data={"sub": user.email},
-                                       expires_delta=access_token_expires)
+                                       expires_delta=access_token_expires,
+                                       config=config)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -125,3 +139,9 @@ async def login_for_access_token(
 async def read_users_me(
         current_user: user_schema.User = Depends(get_current_active_user)):
     return current_user
+
+
+@router.get("/.well-known/jwks.json")
+async def jwks(config: BaseConfig = Depends(get_config)):
+    print(config)
+    return "jkws"

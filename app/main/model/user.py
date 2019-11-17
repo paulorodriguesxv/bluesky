@@ -3,7 +3,6 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy_utils import PasswordType, force_auto_coercion
 from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
 from app.database import db
-from app import config
 
 force_auto_coercion()
 
