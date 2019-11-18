@@ -7,11 +7,12 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_400_BAD_REQUEST
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
+from app.database import get_db
+from app.config import BaseConfig, get_config
 from ..services import user_service
 from ..schemas import user as user_schema
 from ..schemas import token as token_schema
-from app.database import get_db
-from app.config import BaseConfig, get_config
+from ..schemas import jwks as jwks_schema
 
 router = APIRouter()
 
@@ -141,7 +142,18 @@ async def read_users_me(
     return current_user
 
 
-@router.get("/.well-known/jwks.json")
+@router.get("/.well-known/jwks.json", response_model=jwks_schema.Jwks)
 async def jwks(config: BaseConfig = Depends(get_config)):
-    print(config)
-    return "jkws"
+    public_key = config.ACCESS_TOKEN_PUBLIC_KEY.split('\n')
+    public_key = public_key[1:8]
+    print(public_key)
+
+    key_item = dict(alg=config.ACCESS_TOKEN_ALGORITHM,
+                    kid='3q1sysizPaTHQhb+xErwIZfZymN+46UmssneP0vPkes=',
+                    kty='RSA',
+                    n=''.join(public_key),
+                    use='sig')
+
+    results = dict(keys=[key_item])
+
+    return results
