@@ -6,15 +6,18 @@ from app.database import db
 
 force_auto_coercion()
 
+WAANDER_PROVIDER = 'waander'
+
 
 class User(db.Model):
     """ user Model for storing keys related details """
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    password = Column(PasswordType(schemes=['bcrypt']), nullable=False)
+    password = Column(PasswordType(schemes=['bcrypt']), nullable=True)
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False)
+    picture = Column(String(), nullable=False)
     is_active = Column(Boolean, nullable=False, default=True)
     updated_at = Column(DateTime,
                         nullable=False,

@@ -20,12 +20,13 @@ def upgrade():
     op.create_table(
         'users', sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(255), nullable=False),
-        sa.Column('password',
+        sa.Column(
+            'password',
             sqlalchemy_utils.types.encrypted.encrypted_type.EncryptedType(),
-            nullable=False), 
-        sa.Column('email', sa.String(255),
+            nullable=False), sa.Column('email', sa.String(255),
                                        nullable=False),
-        sa.Column('is_active', sa.Boolean, nullable=False),                                       
+        sa.Column('picture', sa.String(), nullable=False),
+        sa.Column('is_active', sa.Boolean, nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False),
         sa.PrimaryKeyConstraint('id'))
 

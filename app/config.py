@@ -20,6 +20,7 @@ def get_private_key():
     except Exception as err:
         logger.error(f'Failed to load private key file: {str(err)}')
 
+
 def get_public_key():
     filename = config("ACCESS_TOKEN_PUBLIC_KEY", default=None)
     try:
@@ -31,6 +32,7 @@ def get_public_key():
     except Exception as err:
         logger.error(f'Failed to load public key file: {str(err)}')
 
+
 class BaseConfig():
     API_PREFIX = '/api'
     TESTING = False
@@ -40,7 +42,11 @@ class BaseConfig():
     ACCESS_TOKEN_PUBLIC_KEY = get_public_key()
     ACCESS_TOKEN_ALGORITHM = config("ACCESS_TOKEN_ALGORITHM", default="RS256")
     ACCESS_TOKEN_EXPIRE_MINUTES = config("ACCESS_TOKEN_EXPIRE_MINUTES",
-                                         default=30)
+                                         default=30,
+                                         cast=int)
+    REFRESH_TOKEN_EXPIRE_MINUTES = config("REFRESH_TOKEN_EXPIRE_MINUTES",
+                                          default=30,
+                                          cast=int)
 
     SQLALCHEMY_DATABASE_URI = config("DATABASE_URI",
                                      default="sqlite:///" +
