@@ -176,7 +176,6 @@ async def get_access_token_from_refresh_token(
         config: BaseConfig = Depends(get_config)):
 
     token_data = get_token_data(token.refresh_token, config)
-
     user = user_service.get_user(db, email=token_data.username)
 
     if not user:
