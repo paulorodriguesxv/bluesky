@@ -43,10 +43,10 @@ class BaseConfig():
     ACCESS_TOKEN_ALGORITHM = config("ACCESS_TOKEN_ALGORITHM", default="RS256")
     ACCESS_TOKEN_EXPIRE_MINUTES = config("ACCESS_TOKEN_EXPIRE_MINUTES",
                                          default=30,
-                                         cast=int)
+                                         cast=float)
     REFRESH_TOKEN_EXPIRE_MINUTES = config("REFRESH_TOKEN_EXPIRE_MINUTES",
                                           default=30,
-                                          cast=int)
+                                          cast=float)
 
     SQLALCHEMY_DATABASE_URI = config("DATABASE_URI",
                                      default="sqlite:///" +
