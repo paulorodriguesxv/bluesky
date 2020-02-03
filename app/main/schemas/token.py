@@ -11,5 +11,6 @@ class TokenData(BaseModel):
 class RefreshToken(BaseModel):
     refresh_token: str
 
-class FacebookToken(BaseModel):
+class SocialToken(BaseModel):
     token: str
+    provider: str

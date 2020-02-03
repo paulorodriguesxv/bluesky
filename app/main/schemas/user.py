@@ -12,13 +12,13 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     password: str
 
-    #@validator('social_token')    
+    @validator('password')
     def check_password_or_token(cls, v, values, **kwargs):
         password_value = values.get('password')
         social_token_value = v
 
         if (not password_value) and (not social_token_value):
-            raise ValueError(f'password or social token must be filled in')
+            raise ValueError(f'password must be filled in')
         
         return v
 

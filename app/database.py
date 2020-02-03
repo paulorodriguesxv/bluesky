@@ -22,10 +22,10 @@ class SQLAlchemy():
         SQLALCHEMY_DATABASE_URI = self.config.SQLALCHEMY_DATABASE_URI
 
         #connect_args={"check_same_thread": False}
-        engine = create_engine(SQLALCHEMY_DATABASE_URI)
+        self.engine = create_engine(SQLALCHEMY_DATABASE_URI)
         self.session = sessionmaker(autocommit=False,
                                     autoflush=False,
-                                    bind=engine)
+                                    bind=self.engine)
 
 
 db = SQLAlchemy()
