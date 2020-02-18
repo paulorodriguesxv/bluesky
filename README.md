@@ -1,7 +1,7 @@
 BlueSky - Lightweight OAuth2 Server and Social Login
 =====================================================
 
-Experimental OAuth2 server forged with the powerful FastAPI
+Experimental Python OAuth2 server forged with the powerful FastAPI
 
 From Zero to Hero:
 ------------------
