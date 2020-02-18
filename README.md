@@ -5,7 +5,7 @@ Experimental OAuth2 server forged with the powerful FastAPI
 
 From Zero to Hero:
 ------------------
-In case you want run BlueSky with no effort, you should just start docker-compose
+In case you want to run BlueSky effortlessly, just start the docker-compose
 ```bash
  docker-compose up -d
 ```
