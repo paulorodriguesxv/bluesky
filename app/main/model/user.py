@@ -6,7 +6,7 @@ from app.database import db
 
 force_auto_coercion()
 
-WAANDER_PROVIDER = 'waander'
+BLUESKY_PROVIDER = 'bluesky'
 
 
 class User(db.Model):
