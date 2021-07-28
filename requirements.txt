@@ -25,7 +25,7 @@ passlib==1.7.1
 psycopg2==2.8.4
 pycares==3.0.0
 pycparser==2.19
-pydantic==0.32.2
+pydantic==1.6.2
 PyJWT==1.7.1
 python-dateutil==2.8.1
 python-decouple==3.1
