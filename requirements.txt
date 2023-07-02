@@ -23,7 +23,7 @@ MarkupSafe==1.1.1
 multidict==4.6.1
 passlib==1.7.1
 psycopg2==2.8.4
-pycares==3.0.0
+pycares==4.2.0
 pycparser==2.19
 pydantic==1.6.2
 PyJWT==2.4.0
